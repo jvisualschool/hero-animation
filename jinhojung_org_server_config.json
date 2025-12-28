@@ -1,9 +1,0 @@
-{
-    "project_name": "jvibeschool_org",
-    "domain": "https://jvibeschool.org",
-    "server_ip": "15.164.161.165",
-    "ssh_user": "bitnami",
-    "ssh_key_path": "~/.ssh/jvibeschool_org.pem",
-    "remote_web_root": "/opt/bitnami/apache/htdocs/",
-    "mysql_root_password": "XvHxGox84PU/"
-}
