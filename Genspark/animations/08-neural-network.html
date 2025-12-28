@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Network Animation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .hero-section {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            transition: background 0.3s ease;
+        }
+
+        .hero-section.light {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        .hero-section.dark {
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+        }
+
+        #neuralCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .content {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .light .content {
+            color: #2c3e50;
+        }
+
+        .dark .content {
+            color: #ecf0f1;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            max-width: 600px;
+        }
+
+        .mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            border-radius: 50px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .light .mode-toggle {
+            background: rgba(0,0,0,0.1);
+            color: #2c3e50;
+            border: 1px solid rgba(0,0,0,0.2);
+        }
+
+        .dark .mode-toggle {
+            background: rgba(255,255,255,0.2);
+            color: #ecf0f1;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .mode-toggle:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-section light" id="heroSection">
+        <canvas id="neuralCanvas"></canvas>
+        <div class="content">
+            <h1>Neural Network</h1>
+            <p>Interconnected nodes visualizing AI neural networks</p>
+        </div>
+        <button class="mode-toggle" onclick="toggleMode()">🌙 Dark Mode</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('neuralCanvas');
+        const ctx = canvas.getContext('2d');
+        const heroSection = document.getElementById('heroSection');
+        let isDark = false;
+        let nodes = [];
+        let time = 0;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initNodes();
+        }
+
+        class Node {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 1;
+                this.vy = (Math.random() - 0.5) * 1;
+                this.radius = Math.random() * 3 + 2;
+                this.connections = [];
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+
+                this.x = Math.max(0, Math.min(canvas.width, this.x));
+                this.y = Math.max(0, Math.min(canvas.height, this.y));
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = isDark ? '#00d4ff' : '#667eea';
+                ctx.fill();
+
+                // Glow effect
+                const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius * 3);
+                gradient.addColorStop(0, isDark ? 'rgba(0, 212, 255, 0.3)' : 'rgba(102, 126, 234, 0.3)');
+                gradient.addColorStop(1, 'rgba(0, 212, 255, 0)');
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius * 3, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initNodes() {
+            nodes = [];
+            const nodeCount = Math.floor((canvas.width * canvas.height) / 15000);
+            for (let i = 0; i < nodeCount; i++) {
+                nodes.push(new Node());
+            }
+        }
+
+        function connectNodes() {
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const dx = nodes[i].x - nodes[j].x;
+                    const dy = nodes[i].y - nodes[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 150) {
+                        const opacity = (1 - distance / 150) * 0.5;
+                        const pulseOpacity = opacity * (Math.sin(time * 0.002 + distance * 0.01) * 0.3 + 0.7);
+
+                        // Draw connection line
+                        ctx.beginPath();
+                        ctx.moveTo(nodes[i].x, nodes[i].y);
+                        ctx.lineTo(nodes[j].x, nodes[j].y);
+                        ctx.strokeStyle = isDark ? 
+                            `rgba(0, 212, 255, ${pulseOpacity})` : 
+                            `rgba(102, 126, 234, ${pulseOpacity})`;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+
+                        // Draw pulse
+                        const pulse = (time * 0.002 + distance * 0.01) % 1;
+                        const pulseX = nodes[i].x + dx * pulse;
+                        const pulseY = nodes[i].y + dy * pulse;
+
+                        ctx.beginPath();
+                        ctx.arc(pulseX, pulseY, 2, 0, Math.PI * 2);
+                        ctx.fillStyle = isDark ? 
+                            `rgba(0, 212, 255, ${(1 - pulse) * opacity})` : 
+                            `rgba(102, 126, 234, ${(1 - pulse) * opacity})`;
+                        ctx.fill();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            time += 16;
+
+            nodes.forEach(node => {
+                node.update();
+                node.draw();
+            });
+
+            connectNodes();
+            requestAnimationFrame(animate);
+        }
+
+        function toggleMode() {
+            isDark = !isDark;
+            heroSection.classList.toggle('dark');
+            heroSection.classList.toggle('light');
+            document.querySelector('.mode-toggle').textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        animate();
+    </script>
+</body>
+</html>

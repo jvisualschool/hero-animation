@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Section Animations Gallery | 10가지 멋진 웹 애니메이션</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">
+                    <i class="fas fa-magic"></i>
+                    Hero Animations
+                </h1>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h2 class="hero-title">10가지 멋진 히어로 섹션 애니메이션</h2>
+                <p class="hero-subtitle">다크/라이트 모드를 지원하는 웹 기반 애니메이션 컬렉션</p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <i class="fas fa-code"></i>
+                        <span>Pure CSS & JS</span>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-mobile-alt"></i>
+                        <span>Responsive</span>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-copy"></i>
+                        <span>Copy & Use</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Animations Gallery -->
+    <section class="gallery">
+        <div class="container">
+            <div class="gallery-grid" id="galleryGrid">
+                <!-- Animation cards will be inserted here by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal for Preview -->
+    <div class="modal" id="previewModal">
+        <div class="modal-overlay" onclick="closeModal()"></div>
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-header">
+                <h3 id="modalTitle">Preview</h3>
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="openFullscreen()">
+                        <i class="fas fa-expand"></i>
+                        전체화면
+                    </button>
+                    <button class="btn btn-primary" onclick="copyCode()">
+                        <i class="fas fa-copy"></i>
+                        코드 복사
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <iframe id="previewFrame" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Hero Animations Gallery. Created with <i class="fas fa-heart"></i> by jvisualschool</p>
+            <div class="footer-links">
+                <a href="https://github.com/jvisualschool" target="_blank">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="https://www.instagram.com/jvisualschool/" target="_blank">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://www.jvisualschool.com/" target="_blank">
+                    <i class="fas fa-globe"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">코드가 클립보드에 복사되었습니다!</span>
+    </div>
+
+    <script src="js/animations-data.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

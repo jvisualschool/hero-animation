@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurora Borealis Animation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .hero-section {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            transition: background 0.3s ease;
+        }
+
+        .hero-section.light {
+            background: linear-gradient(to bottom, #87ceeb 0%, #e0f6ff 100%);
+        }
+
+        .hero-section.dark {
+            background: linear-gradient(to bottom, #0a1128 0%, #001f3f 100%);
+        }
+
+        #auroraCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.8;
+        }
+
+        .content {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        p {
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            max-width: 600px;
+            text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 50px;
+            padding: 10px 20px;
+            cursor: pointer;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .mode-toggle:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-section dark" id="heroSection">
+        <canvas id="auroraCanvas"></canvas>
+        <div class="content">
+            <h1>Aurora Borealis</h1>
+            <p>Mesmerizing northern lights flowing across the sky</p>
+        </div>
+        <button class="mode-toggle" onclick="toggleMode()">☀️ Light Mode</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('auroraCanvas');
+        const ctx = canvas.getContext('2d');
+        const heroSection = document.getElementById('heroSection');
+        let isDark = true;
+        let time = 0;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        function drawAurora() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const waves = 5;
+            const amplitude = 80;
+            const frequency = 0.002;
+
+            for (let w = 0; w < waves; w++) {
+                const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                
+                if (isDark) {
+                    gradient.addColorStop(0, `hsla(${120 + w * 30}, 70%, 50%, 0)`);
+                    gradient.addColorStop(0.5, `hsla(${120 + w * 30}, 70%, 50%, ${0.3 - w * 0.05})`);
+                    gradient.addColorStop(1, `hsla(${120 + w * 30}, 70%, 50%, 0)`);
+                } else {
+                    gradient.addColorStop(0, `hsla(${180 + w * 30}, 60%, 60%, 0)`);
+                    gradient.addColorStop(0.5, `hsla(${180 + w * 30}, 60%, 60%, ${0.4 - w * 0.06})`);
+                    gradient.addColorStop(1, `hsla(${180 + w * 30}, 60%, 60%, 0)`);
+                }
+
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+
+                for (let x = 0; x <= canvas.width; x += 5) {
+                    const y = canvas.height * 0.3 + 
+                             Math.sin(x * frequency + time * 0.001 + w) * amplitude +
+                             Math.sin(x * frequency * 2 + time * 0.0015 + w * 0.5) * (amplitude * 0.5);
+                    
+                    if (x === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+
+                ctx.lineTo(canvas.width, canvas.height);
+                ctx.lineTo(0, canvas.height);
+                ctx.closePath();
+                ctx.fill();
+            }
+        }
+
+        function animate() {
+            time += 16;
+            drawAurora();
+            requestAnimationFrame(animate);
+        }
+
+        function toggleMode() {
+            isDark = !isDark;
+            heroSection.classList.toggle('dark');
+            heroSection.classList.toggle('light');
+            document.querySelector('.mode-toggle').textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        animate();
+    </script>
+</body>
+</html>

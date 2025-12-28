@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>반딧불이 - 히어로 애니메이션</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        /* Specific overrides for single page view */
+        .sidebar { display: none !important; }
+        .preview-area { width: 100% !important; }
+        
+        /* Header adjustment */
+        .page-header {
+            position: absolute;
+            top: 20px;
+            right: 20px; /* Align to right */
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--glass-bg);
+            padding: 5px 10px;
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--sidebar-border);
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--glass-bg);
+            padding: 10px 20px;
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--sidebar-border);
+            transition: all 0.3s ease;
+        }
+        .back-link:hover {
+            background: var(--hover-bg);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+    <header class="page-header">
+        <div class="header-controls">
+            <a href="index.html" class="back-link" style="border: none; background: none; padding: 0;">
+                <i class="fas fa-arrow-left"></i>
+                Main
+            </a>
+            <div style="width: 1px; height: 20px; background: var(--sidebar-border);"></div>
+            <button id="theme-toggle" class="icon-btn" title="테마 변경" style="background: none; border: none; font-size: 1.2rem; cursor: pointer;">
+                <span class="icon">◑</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="preview-area">
+        <canvas id="hero-canvas"></canvas>
+    </main>
+
+    <aside class="settings-panel">
+        <div id="current-info" style="padding: 1.5rem; border-bottom: 1px solid var(--sidebar-border); margin-top: 60px;">
+            <h2 id="anim-title" style="font-size: 1.5rem; margin-bottom: 0.5rem; font-weight: 600;">로딩 중...</h2>
+            <p id="anim-desc" style="font-size: 0.9rem; opacity: 0.7; line-height: 1.4;"></p>
+            <a href="https://www.google.com/search?q=Fireflies%20animation" target="_blank" rel="noopener" style="display: inline-block; margin-top: 10px; font-size: 0.85rem; color: var(--accent); text-decoration: none;">
+                🔍 더 공부하기 →
+            </a>
+        </div>
+        
+        <div class="settings-header">
+            <h3>설정</h3>
+        </div>
+        <div id="settings-container" class="settings-content">
+            <!-- Dynamic Controls -->
+        </div>
+
+        <div class="control-group" style="padding: 1.5rem; border-top: 1px solid var(--sidebar-border); display: flex; justify-content: center;">
+            <button id="copy-code-btn" class="text-btn" style="flex: 1;">
+                소스 코드 복사
+            </button>
+        </div>
+    </aside>
+
+    <!-- Modal for copying code -->
+    <div id="code-modal" class="modal hidden">
+        <div class="modal-content">
+            <header>
+                <h3>Implementation Code</h3>
+                <button id="close-modal">✕</button>
+            </header>
+            <div class="code-preview">
+                <pre><code id="code-block"></code></pre>
+            </div>
+            <button id="confirm-copy">클립보드에 복사</button>
+        </div>
+    </div>
+
+    <!-- Inject App Logic with forced ID -->
+    <script type="module">
+        import { App } from './js/app.js';
+        const app = new App();
+        app.init('fireflies');
+    </script>
+</body>
+</html>
